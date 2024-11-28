@@ -4,7 +4,7 @@ import connectDB from './db.js';
 import cors from 'cors';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { AuthenticateToken, CreateAccessToken, CreateRefreshToken } from "./util.js"
+import { AuthenticateToken, CreateAccessToken, CreateRefreshToken, StrToDate } from "./util.js"
 import User from './models/User';
 import RefreshToken from './models/RefreshToken';
 import Package from './models/Package.js';
@@ -33,6 +33,7 @@ app.get(routes.health, (req, res) => {
 
 app.post(routes.login, async (req, res) => {
     try {
+        console.log("LOGIN REQUEST: ", req.body);
         const { username, password } = req.body;
         const user = await User.findOne({
             username: username
@@ -60,6 +61,7 @@ app.post(routes.login, async (req, res) => {
 
 app.post(routes.refreshToken, async (req, res) => {
     try {
+        console.log("REFRESH TOKEN REQUEST: ", req.body);
         const { refreshToken } = req.body;
 
         //verify token
@@ -94,13 +96,17 @@ app.post(routes.refreshToken, async (req, res) => {
         const newRefreshToken = await CreateRefreshToken(user);
         // Optional: Generate new refresh token for additional security
 
+        var dateToAccessExpires = StrToDate(process.env.ACCESS_TOKEN_EXPIRY);
+
         res.json({
             accessToken: newAccessToken,
+            accessTokenExpiry: dateToAccessExpires.getTime(),
             refreshToken: newRefreshToken,
             username: user.username
         });
 
     } catch (error) {
+        console.log("INTERNAL SERVER ERROR ON REFRESH TOKEN: ", error);
         return res.status(403).json({ message: 'Invalid refresh token' });
     }
 });

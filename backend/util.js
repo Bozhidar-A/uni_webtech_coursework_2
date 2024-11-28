@@ -1,21 +1,22 @@
 import jwt from "jsonwebtoken";
 import RefreshToken from "./models/RefreshToken";
 import { body, validationResult } from "express-validator";
-import { EXPIRY_TIMES } from "./consts";
 
-function StrToDate(str) {
+export function StrToDate(str) {
     var parts = str.split("");
-    if (parts.length > 2) throw new Error("Invalid date format");
+    console.log("STR TO DATE: ", parts);
+    //check for above 3 digits like 150m
+    if (parts.length > 3) throw new Error("Invalid date format");
 
-    switch (parts[1]) {
-        case "d":
-            return new Date(Date.now() + parts[0] * 24 * 60 * 60 * 1000);
-        case "h":
-            return new Date(Date.now() + parts[0] * 60 * 60 * 1000);
+    var restOfParts = parts.slice(0, parts.length - 1);
+
+    switch (parts[parts.length - 1]) {
         case "m":
-            return new Date(Date.now() + parts[0] * 60 * 1000);
-        case "s":
-            return new Date(Date.now() + parts[0] * 1000);
+            return new Date(Date.now() + parseInt(restOfParts) * 60000);
+        case "h":
+            return new Date(Date.now() + parseInt(restOfParts) * 3600000);
+        case "d":
+            return new Date(Date.now() + parseInt(restOfParts) * 86400000);
         default:
             throw new Error("Invalid date format");
     }
@@ -26,7 +27,7 @@ export function CreateAccessToken(user) {
         id: user.id,
         username: user.username,
     }, process.env.JWT_SECRET, {
-        expiresIn: EXPIRY_TIMES.ACCESS_TOKEN
+        expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
     });
 }
 
@@ -40,13 +41,13 @@ export async function CreateRefreshToken(user) {
             username: user.username
         },
         process.env.REFRESH_TOKEN_SECRET,
-        { expiresIn: EXPIRY_TIMES.REFRESH_TOKEN }
+        { expiresIn: process.env.REFRESH_TOKEN_EXPIRY }
     );
 
     await RefreshToken.create({
         user: user.id,
         token: refreshToken,
-        expiresAt: StrToDate(EXPIRY_TIMES.REFRESH_TOKEN),
+        expiresAt: StrToDate(process.env.REFRESH_TOKEN_EXPIRY),
     });
 
     return refreshToken;
