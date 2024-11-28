@@ -1,11 +1,30 @@
 'use client';
 
-import { signIn, signOut } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import useAuth from "./hooks/useAuth";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Home() {
+  const { data: session } = useSession();
   const isAuthenticated = useAuth(false);
+  const [isTokenValid, setIsTokenValid] = useState(false);
+
+  async function CallAPIValid() {
+    var res = await fetch("http://localhost:4000/verify-token", {
+      headers: {
+        "authorization": `Bearer ${session.accessToken}`
+      }
+    })
+
+    if (!res.ok) {
+      console.log("Token is not valid")
+      setIsTokenValid(false)
+    } else {
+      console.log("Token is valid")
+      setIsTokenValid(true)
+    }
+  }
 
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -15,6 +34,8 @@ export default function Home() {
           Sign out
         </button>
         <p>{JSON.stringify(isAuthenticated)}</p>
+        <button onClick={CallAPIValid}>Is token valid? {String(isTokenValid)}</button>
+        <p>{JSON.stringify(session)}</p>
       </main>
     </div>
   )

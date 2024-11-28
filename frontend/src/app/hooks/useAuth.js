@@ -16,14 +16,12 @@ export default function useAuth(shouldRedirect) {
     ];
 
     useEffect(() => {
-        console.log("useEffect running", { session, status, pathname });
 
         // If session is loading, do nothing
         if (status === "loading") return;
 
         // If session is null (unauthenticated user)
         if (session === null) {
-            console.log(protectedPages[0], pathname);
             const isProtectedRoute = matchPattern(protectedPages[0], pathname);
 
             if (isProtectedRoute) {
@@ -42,8 +40,6 @@ export default function useAuth(shouldRedirect) {
             setIsAuthenticated(true); // Authenticated
         }
     }, [session, pathname, status, shouldRedirect]);
-
-    console.log("isAuthenticated", isAuthenticated); // Debug state
 
     return isAuthenticated;
 }

@@ -17,8 +17,10 @@ const providers = [
                 );
 
                 const user = response.data;
+                console.log('User:', user);
 
                 if (user.accessToken) {
+                    console.log("user is returned");
                     return user; // Return user data if authentication is successful
                 }
 
@@ -39,18 +41,46 @@ export const OPTIONS = {
     callbacks: {
         async jwt({ token, user }) {
             if (user) {
-                // When logging in, set token details
                 token.accessToken = user.accessToken;
                 token.accessTokenExpiry = user.accessTokenExpiry;
                 token.refreshToken = user.refreshToken;
                 token.username = user.username;
+            } else if (token.accessTokenExpiry && token.refreshToken) {
+                // Check if the access token is expired
+                const isTokenExpired = Date.now() > token.accessTokenExpiry;
+
+                if (isTokenExpired) {
+                    try {
+                        // Call the API to refresh the token
+                        const response = await axios.post(`${process.env.API_BASE_URL}${process.env.API_AUTH_REFRESHTOKEN}`, {
+                            refreshToken: token.refreshToken,
+                        });
+
+                        // Update the token with the new access token and expiry
+                        token.accessToken = response.data.accessToken;
+                        token.accessTokenExpiry = response.data.accessTokenExpiry;
+                        token.refreshToken = response.data.refreshToken || token.refreshToken; // optional if a new refresh token is returned
+                    } catch (error) {
+                        console.error('Failed to refresh token:', error.message);
+
+                        // If refresh fails (e.g., invalid refresh token), log out the user
+                        return null; // This will clear the session
+                    }
+                }
             }
-            return token; // Return updated token or the original one
+
+            return token;
         },
+
         async session({ session, token }) {
-            session.accessToken = token.accessToken;
-            session.accessTokenExpiry = token.accessTokenExpiry;
-            session.error = token.error;
+            if (!token) {
+                // If no token, the user has been logged out
+                session.user = null;
+            } else {
+                session.accessToken = token.accessToken;
+                session.accessTokenExpiry = token.accessTokenExpiry;
+                session.error = token.error;
+            }
             return session;
         },
     },
