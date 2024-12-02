@@ -2,8 +2,10 @@
 
 import { signIn, signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import useAuth from "../hooks/useAuth";
 
 export default function Login() {
+    const auth = useAuth();
     const router = useRouter();
 
     async function HandleSubmit(e) {

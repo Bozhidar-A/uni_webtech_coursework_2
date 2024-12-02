@@ -17,6 +17,8 @@ export function StrToDate(str) {
             return new Date(Date.now() + parseInt(restOfParts) * 3600000);
         case "d":
             return new Date(Date.now() + parseInt(restOfParts) * 86400000);
+        case "s":
+            return new Date(Date.now() + parseInt(restOfParts) * 1000);
         default:
             throw new Error("Invalid date format");
     }

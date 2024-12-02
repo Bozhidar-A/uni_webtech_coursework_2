@@ -51,8 +51,9 @@ app.post(routes.login, async (req, res) => {
 
         const accessToken = CreateAccessToken(user);
         const refreshToken = await CreateRefreshToken(user);
+        const accessTokenExpiry = StrToDate(process.env.ACCESS_TOKEN_EXPIRY).getTime();
 
-        res.status(200).json({ accessToken, refreshToken });
+        res.status(200).json({ accessToken, refreshToken, accessTokenExpiry });
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: "Internal server error" });

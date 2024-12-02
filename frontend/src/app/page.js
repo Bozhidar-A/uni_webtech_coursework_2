@@ -7,15 +7,11 @@ import { useState } from "react";
 
 export default function Home() {
   const { data: session } = useSession();
-  const isAuthenticated = useAuth(false);
+  const auth = useAuth();
   const [isTokenValid, setIsTokenValid] = useState(false);
 
   async function CallAPIValid() {
-    var res = await fetch("http://localhost:4000/verify-token", {
-      headers: {
-        "authorization": `Bearer ${session.accessToken}`
-      }
-    })
+    var res = await auth.handleRequest("http://localhost:4000/verify-token")
 
     if (!res.ok) {
       console.log("Token is not valid")
@@ -26,6 +22,20 @@ export default function Home() {
     }
   }
 
+  function MakeAuthedRequest() {
+    // auth.handleRequest("http://localhost:4000/packages")
+    fetch("http://localhost:4000/packages", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.accessToken}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => console.log(data))
+      .catch((error) => console.error("Error:", error));
+  }
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
@@ -33,9 +43,10 @@ export default function Home() {
         <button onClick={() => signOut()}>
           Sign out
         </button>
-        <p>{JSON.stringify(isAuthenticated)}</p>
+        <p>{JSON.stringify(auth)}</p>
         <button onClick={CallAPIValid}>Is token valid? {String(isTokenValid)}</button>
         <p>{JSON.stringify(session)}</p>
+        <button onClick={MakeAuthedRequest}>Make Authed Request</button>
       </main>
     </div>
   )

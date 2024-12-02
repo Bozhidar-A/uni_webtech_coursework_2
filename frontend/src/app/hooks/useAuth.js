@@ -1,45 +1,118 @@
-'use client';
-
-import { useSession } from "next-auth/react";
-import { useRouter, usePathname } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 import { useEffect, useState } from "react";
-import { matchPattern } from "url-matcher";
+import { useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
-export default function useAuth(shouldRedirect) {
-    const { data: session, status } = useSession(); // Session data and status (loading, authenticated, etc.)
+export default function useAuth(redirectTo = "/login") {
+    const { data: session, status } = useSession();
+    const [error, setError] = useState(null);
     const router = useRouter();
     const pathname = usePathname();
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    const protectedPages = [
-        "/packages/*",
-    ];
+    // const protectedPages = [
+    //     "/packages/*",
+    // ];
 
-    useEffect(() => {
+    // // Redirect if unauthenticated
+    // useEffect(() => {
+    //     //wait for session to load
+    //     if (status === "loading") return;
 
-        // If session is loading, do nothing
-        if (status === "loading") return;
+    //     const isProtectedRoute = protectedPages.some((sub) => {
+    //         return matchPattern(sub, pathname);
+    //     })
 
-        // If session is null (unauthenticated user)
-        if (session === null) {
-            const isProtectedRoute = matchPattern(protectedPages[0], pathname);
+    //     if (status === "unauthenticated" && isProtectedRoute) {
+    //         router.push(redirectTo); // Redirect to login
+    //     }
 
-            if (isProtectedRoute) {
-                console.log("Redirecting to login (unauthenticated)");
-                router.replace('/login');
-            }
+    //     //if authenticated and on login page, redirect to home
+    //     console.log(process.env.NEXT_PUBLIC_API_AUTH_LOGIN);
+    //     console.log(pathname);
+    //     if (status === "authenticated" && pathname === process.env.NEXT_PUBLIC_API_AUTH_LOGIN) {
+    //         router.push("/");
+    //     }
+    // }, [status, redirectTo, router]);
 
-            setIsAuthenticated(false); // Not authenticated
-        } else {
-            // If session is available (authenticated user)
-            if (pathname === '/login') {
-                console.log("Redirecting to home (authenticated user on login page)");
-                router.replace('/'); // Redirect to home if user is authenticated and on login page
-            }
+    // // Proactively refresh tokens if the access token is expired
+    // useEffect(() => {
+    //     if (session?.accessToken && session.accessTokenExpires && Date.now() > session.accessTokenExpires) {
+    //         refreshTokens();
+    //     }
+    // }, [session]);
 
-            setIsAuthenticated(true); // Authenticated
-        }
-    }, [session, pathname, status, shouldRedirect]);
+    // // Function to refresh tokens
+    // const refreshTokens = async () => {
+    //     try {
+    //         const response = await fetch("/api/auth/session", { method: "GET" });
+    //         const updatedSession = await response.json();
 
-    return isAuthenticated;
+    //         if (updatedSession.error) {
+    //             throw new Error(updatedSession.error);
+    //         }
+    //     } catch (err) {
+    //         console.error("Failed to refresh session:", err);
+    //         setError("Session expired, please log in again.");
+    //         signOut(); // Log out user on token refresh failure
+    //     }
+    // };
+
+    // // Handle API requests with token validation
+    // const handleRequest = async (url, options = {}) => {
+    //     // Check if token is expired and refresh it before making the request
+    //     if (session?.accessTokenExpires && Date.now() > session.accessTokenExpires) {
+    //         try {
+    //             await refreshTokens();
+    //         } catch {
+    //             throw new Error("Unable to refresh token. Please log in again.");
+    //         }
+    //     }
+
+    //     if (!options.headers) {
+    //         options.headers = {
+    //             "Content-Type": "application/json",
+    //         };
+    //     }
+
+
+
+    //     const response = await fetch(url, {
+    //         ...options,
+    //         headers: {
+    //             ...options.headers,
+    //             Authorization: `Bearer ${session?.accessToken}`,
+    //         },
+    //     });
+
+    //     console.log(response);
+
+    //     // If the request fails due to token issues, attempt to refresh and retry
+    //     if (!response.ok) {
+    //         try {
+    //             await refreshTokens();
+    //             const retryResponse = await fetch(url, {
+    //                 ...options,
+    //                 headers: {
+    //                     ...options.headers,
+    //                     Authorization: `Bearer ${session?.accessToken}`,
+    //                 },
+    //             });
+    //             if (!retryResponse.ok) throw new Error("Request failed after retry");
+    //             return retryResponse.json();
+    //         } catch (err) {
+    //             setError("Failed to refresh session. Please log in again.");
+    //             signOut(); // Log out if refresh and retry fail
+    //             throw err;
+    //         }
+    //     }
+
+    //     return response.json();
+    // };
+
+    return {
+        session,
+        status,
+        // error,
+        // handleRequest,
+    };
 }
