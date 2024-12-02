@@ -1,16 +1,13 @@
 'use client';
 
-import { SessionProvider, useSession } from 'next-auth/react';
-import { useState } from 'react';
-import RefreshTokenHandler from '@/app/components/RefreshTokenHandler.js';
+import { SessionProvider } from 'next-auth/react';
 import { SubProviders } from './SubProviders';
 
 
 export function Providers({ children }) {
-    const [interval, setInterval] = useState(0);
 
     return (
-        <SessionProvider refetchInterval={10}>
+        <SessionProvider refetchInterval={process.env.NEXT_PUBLIC_SESSION_POLL_INTERVAL}>
             <SubProviders>
                 {children}
                 {/* <RefreshTokenHandler setInterval={setInterval} /> */}

@@ -17,6 +17,8 @@ export default function Login() {
             redirect: false
         });
 
+        console.log('Login response:', res);
+
         if (res?.error) {
             // Display an alert or a custom notification to the user
             alert(`Error: ${res.error}`);  // Simple alert for demonstration

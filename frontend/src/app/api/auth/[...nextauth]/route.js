@@ -83,7 +83,8 @@ const OPTIONS = {
                 token.username = user.username;
             }
 
-            const isTokenExpired = Date.now() > token.accessTokenExpiry;
+            const isTokenExpired = new Date().getTime() > token.accessTokenExpiry;
+
             if (!isTokenExpired) {
                 return token;
             }

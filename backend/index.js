@@ -39,12 +39,14 @@ app.post(routes.login, async (req, res) => {
             username: username
         });
 
+        console.log("LOGIN USER: ", user);
         if (!user) {
             return res.status(400).json({ message: "Invalid username or password" });
         }
 
         const validPassword = await bcrypt.compare(password, user.password);
 
+        console.log("LOGIN VALID PASSWORD: ", validPassword);
         if (!validPassword) {
             return res.status(400).json({ message: "Invalid username or password" });
         }
@@ -75,12 +77,14 @@ app.post(routes.refreshToken, async (req, res) => {
         });
 
         if (!storedToken) {
+            console.log("refreshToken route: Token not found");
             return res.status(403).json({ message: 'Invalid refresh token' });
         }
 
         //token expired?
         if (storedToken.expiresAt < new Date()) {
             await RefreshToken.deleteOne({ _id: storedToken._id });
+            console.log("refreshToken route: Token expired");
             return res.status(403).json({ message: 'Refresh token expired' });
         }
 
@@ -88,6 +92,7 @@ app.post(routes.refreshToken, async (req, res) => {
         const user = await User.findById(decoded.id);
 
         if (!user) {
+            console.log("refreshToken route: User not found");
             return res.status(403).json({ message: 'User not found' });
         }
 
@@ -99,6 +104,7 @@ app.post(routes.refreshToken, async (req, res) => {
 
         var dateToAccessExpires = StrToDate(process.env.ACCESS_TOKEN_EXPIRY);
 
+        console.log("REFRESH SUCCESS TOKEN: ", newAccessToken, newRefreshToken, dateToAccessExpires);
         res.json({
             accessToken: newAccessToken,
             accessTokenExpiry: dateToAccessExpires.getTime(),

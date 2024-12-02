@@ -9,16 +9,17 @@ export function StrToDate(str) {
     if (parts.length > 3) throw new Error("Invalid date format");
 
     var restOfParts = parts.slice(0, parts.length - 1);
+    var parsed = parseInt(restOfParts.join(''));
 
     switch (parts[parts.length - 1]) {
-        case "m":
-            return new Date(Date.now() + parseInt(restOfParts) * 60000);
-        case "h":
-            return new Date(Date.now() + parseInt(restOfParts) * 3600000);
-        case "d":
-            return new Date(Date.now() + parseInt(restOfParts) * 86400000);
         case "s":
-            return new Date(Date.now() + parseInt(restOfParts) * 1000);
+            return new Date(Date.now() + parsed * 1000);
+        case "m":
+            return new Date(Date.now() + parsed * 60000);
+        case "h":
+            return new Date(Date.now() + parsed * 3600000);
+        case "d":
+            return new Date(Date.now() + parsed * 86400000);
         default:
             throw new Error("Invalid date format");
     }
