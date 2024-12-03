@@ -99,16 +99,12 @@ app.post(routes.refreshToken, async (req, res) => {
         //gen new token
         const newAccessToken = CreateAccessToken(user);
 
-        const newRefreshToken = await CreateRefreshToken(user);
-        // Optional: Generate new refresh token for additional security
-
         var dateToAccessExpires = StrToDate(process.env.ACCESS_TOKEN_EXPIRY);
 
-        console.log("REFRESH SUCCESS TOKEN: ", newAccessToken, newRefreshToken, dateToAccessExpires);
+        console.log("REFRESH SUCCESS TOKEN: ", newAccessToken, dateToAccessExpires);
         res.json({
             accessToken: newAccessToken,
             accessTokenExpiry: dateToAccessExpires.getTime(),
-            refreshToken: newRefreshToken,
             username: user.username
         });
 
@@ -144,17 +140,17 @@ app.post(routes.packageDeliveryStatusUpdate, AuthenticateToken, async (req, res)
         });
 
         if (!workedPackage) {
-            return res.status(404).json({ message: "Package not found" });
+            return res.status(404).json({ error: "Package not found" });
         }
 
         //check if new delivery status is supplied
         if (isDelivered === undefined) {
-            return res.status(400).json({ message: "New delivery status not supplied" });
+            return res.status(400).json({ error: "New delivery status not supplied" });
         }
 
         //delivery sttaus is only boolean
         if (typeof isDelivered !== "boolean") {
-            return res.status(400).json({ message: "Invalid new delivery status" });
+            return res.status(400).json({ error: "Invalid new delivery status" });
         }
 
         //update package
@@ -165,17 +161,17 @@ app.post(routes.packageDeliveryStatusUpdate, AuthenticateToken, async (req, res)
 
         if (requestStatus.matchedCount === 0) {
             console.log("This was already checked? WHAT?!?!?");
-            return res.status(404).json({ message: "Package not found" });
+            return res.status(404).json({ error: "Package not found" });
         }
 
         if (requestStatus.nModified === 0) {
-            return res.status(500).json({ message: "Failed to update package" });
+            return res.status(500).json({ error: "Failed to update package" });
         }
 
         res.status(200).json({ message: "Package updated" });
     } catch (error) {
         console.log("INTERNAL SERVER ERROR: ", error);
-        res.status(500).json({ message: "Internal Server Error" });
+        res.status(500).json({ error: "Internal Server Error" });
     }
 });
 
