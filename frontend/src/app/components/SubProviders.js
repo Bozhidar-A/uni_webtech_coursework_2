@@ -1,23 +1,49 @@
 'use client';
 
 import { signOut, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { FadeLoader } from "react-spinners";
+import Header from "./Header";
 
 export function SubProviders({ children }) {
     const sesh = useSession();
+    const path = usePathname();
+    const router = useRouter();
+    const [isLoadingSession, setIsLoadingSession] = useState(true);
+
 
     useEffect(() => {
-        console.log("Session:", sesh);
+        //dont display unless we have a session
+        //this feels dumb but i feel like i am avoiding a foot gun
+        if (sesh?.status === "loading") {
+            setIsLoadingSession(true);
+        } else {
+            setIsLoadingSession(false);
+        }
+
         // self check if refresh token fail from server
         if (sesh?.data?.error === "REFRESH_TOKEN_EXPIRED_ERROR") {
-            console.error("Your refresh token has expired. Please log back in. Failed with error:", sesh.data.error);
+            console.log("Your refresh token has expired. Please log back in. Failed with error:", sesh.data.error);
             signOut(); // Log out user on token refresh failure
+        }
+
+        //kick user out of login page if they are already logged in
+        if (sesh?.status === "authenticated" && path === "/login") {
+            //https://nextjs.org/docs/app/building-your-application/routing/linking-and-navigating#windowhistoryreplacestate
+            // Redirect to home page if user is already logged in
+            // window.history.replaceState(null, "", "/");
+            router.push("/");
         }
     }, [sesh]);
 
     return (
         <>
-            {children}
+            {isLoadingSession ? <FadeLoader /> : <><Header />{children}</>}
         </>
     )
+
+
+
 }

@@ -10,7 +10,6 @@ export function Providers({ children }) {
         <SessionProvider refetchInterval={process.env.NEXT_PUBLIC_SESSION_POLL_INTERVAL}>
             <SubProviders>
                 {children}
-                {/* <RefreshTokenHandler setInterval={setInterval} /> */}
             </SubProviders>
         </SessionProvider>
     );

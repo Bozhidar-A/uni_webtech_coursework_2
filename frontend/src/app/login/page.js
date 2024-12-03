@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import useAuth from "../hooks/useAuth";
 
 export default function Login() {
-    const auth = useAuth();
     const router = useRouter();
 
     async function HandleSubmit(e) {
@@ -24,7 +23,7 @@ export default function Login() {
             alert(`Error: ${res.error}`);  // Simple alert for demonstration
         } else {
             // Handle successful login (e.g., redirect user or update UI)
-            alert('Login successful!');
+            // alert('Login successful!');
             router.push('/');  // Redirect to the homepage
         }
 
