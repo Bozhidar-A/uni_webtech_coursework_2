@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FadeLoader } from "react-spinners";
 import Header from "./Header";
+import LoadingWait from "./LoadingWait";
 
 export function SubProviders({ children }) {
     const sesh = useSession();
@@ -40,7 +41,7 @@ export function SubProviders({ children }) {
 
     return (
         <>
-            {isLoadingSession ? <FadeLoader /> : <><Header />{children}</>}
+            {isLoadingSession ? <LoadingWait /> : <div><Header />{children}</div>}
         </>
     )
 

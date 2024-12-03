@@ -3,10 +3,13 @@
 import { useEffect, useState } from "react";
 import useAuth from "../hooks/useAuth"
 import Package from "../components/Package";
+import LoadingWait from "../components/LoadingWait";
 
 export default function Packages() {
     const auth = useAuth();
 
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
     const [packages, setPackages] = useState([]);
 
     useEffect(() => {
@@ -15,8 +18,11 @@ export default function Packages() {
             .then((res) => res.json())
             .then((data) => {
                 setPackages(data);
+                setLoading(false);
             }).catch((err) => {
                 console.error(err);
+                setError(err);
+                setLoading(false);
                 alert("Error fetching packages");
             });
 
@@ -48,18 +54,36 @@ export default function Packages() {
             );
     }
 
+    if (loading) {
+        return <LoadingWait />
+    }
+
     return (
-        <div>
-            <h1>Packages</h1>
-            {packages.map((p) => {
-                return <Package key={p.id}
-                    id={p.id}
-                    address={p.address}
-                    deliveryPrice={p.deliveryPrice}
-                    isDelivered={p.isDelivered}
-                    recipientName={p.recipientName}
-                    HandleUpdateState={HandleUpdateState} />
-            })}
+        <div className="container mx-auto px-4 py-8 max-w-4xl">
+            <h1 className="text-3xl font-bold text-gray-800 dark:text-white mb-6 text-center">Packages</h1>
+
+            {error ? (<div className="text-center text-red-500 py-12">
+                Error fetching packages
+            </div>
+            ) : packages.length === 0 ? (
+                <div className="text-center text-gray-500 py-12">
+                    No packages found
+                </div>
+            ) : (
+                <div className="space-y-4">
+                    {packages.map((p) => (
+                        <Package
+                            key={p.id}
+                            id={p.id}
+                            address={p.address}
+                            deliveryPrice={p.deliveryPrice}
+                            isDelivered={p.isDelivered}
+                            recipientName={p.recipientName}
+                            HandleUpdateState={HandleUpdateState}
+                        />
+                    ))}
+                </div>
+            )}
         </div>
     )
 }
