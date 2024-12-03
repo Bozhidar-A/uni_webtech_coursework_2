@@ -16,14 +16,11 @@ export default function Login() {
             redirect: false
         });
 
-        console.log('Login response:', res);
-
         if (res?.error) {
             // Display an alert or a custom notification to the user
             alert(`Error: ${res.error}`);  // Simple alert for demonstration
         } else {
             // Handle successful login (e.g., redirect user or update UI)
-            // alert('Login successful!');
             router.push('/');  // Redirect to the homepage
         }
 

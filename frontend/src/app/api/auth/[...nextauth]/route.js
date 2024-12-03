@@ -96,7 +96,6 @@ const OPTIONS = {
                 return {
                     ...token,
                     accessToken: refreshRes.accessToken,
-                    refreshToken: refreshRes.refreshToken,
                     accessTokenExpiry: refreshRes.accessTokenExpiry,
                 };
             }
@@ -134,14 +133,10 @@ async function refreshAccessToken(refreshToken) {
             headers: { "Content-Type": "application/json" },
         });
 
-        console.log("refreshAccessToken: ", response.ok);
-
         const data = await response.json();
-        console.log("refreshAccessToken: ", data);
-        if (response.ok && data.accessToken && data.refreshToken) {
+        if (response.ok && data.accessToken) {
             return {
                 accessToken: data.accessToken,
-                refreshToken: data.refreshToken,
                 accessTokenExpiry: data.accessTokenExpiry,
             };
         }
