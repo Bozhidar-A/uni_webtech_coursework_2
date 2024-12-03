@@ -1,7 +1,5 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { signIn, signOut } from "next-auth/react";
-import { redirect } from "next/navigation";
 
 const states = {
     AUTH_SIGNIN_SERVER_ERROR: "AUTH_SIGNIN_SERVER_ERROR",
@@ -13,8 +11,8 @@ const OPTIONS = {
         CredentialsProvider({
             name: "Username and Password",
             credentials: {
-                username: { label: "Username", type: "text", placeholder: "jsmith" },
-                password: { label: "Password", type: "password" }
+                username: { label: "Username", type: "text", placeholder: "username" },
+                password: { label: "Password", type: "password", placeholder: "password" },
             },
             async authorize(credentials, req) {
                 //attempt to sing in
@@ -122,6 +120,9 @@ const OPTIONS = {
 
             return session;
         },
+    },
+    pages: {
+        signIn: "/login",
     }
 };
 
