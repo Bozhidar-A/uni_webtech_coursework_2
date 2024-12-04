@@ -10,7 +10,7 @@ export default function Home() {
   function AuthSwitcher() {
     if (auth.isAuthenticated) {
       return (
-        <Link href={process.env.NEXT_PUBLIC_API_PACKAGES}><h1 className="text-5xl">You are logged in. Click here to head to packages</h1></Link>
+        <Link href={process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE}><h1 className="text-5xl">You are logged in. Click here to head to packages</h1></Link>
       )
     }
 
