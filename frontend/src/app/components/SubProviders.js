@@ -38,7 +38,7 @@ export function SubProviders({ children }) {
         }
 
         //protect routes
-        const protectedRoutes = [process.env.NEXT_PUBLIC_API_PACKAGES, process.env.NEXT_PUBLIC_API_PACKAGES_UPDATE_DELIVERY_STATUS];
+        const protectedRoutes = [process.env.NEXT_PUBLIC_API_PACKAGES, process.env.NEXT_PUBLIC_API_PACKAGES_UPDATE_DELIVERY_STATUS, process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE];
         if (protectedRoutes.includes(path) && sesh?.status !== "authenticated") {
             router.push("/login");
         }
