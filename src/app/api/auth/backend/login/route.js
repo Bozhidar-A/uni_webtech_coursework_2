@@ -8,6 +8,7 @@ export async function POST(req) {
     try {
         await dbConnect();
 
+        console.log("SERVER - LOGIN REQUEST: ", req);
         const data = await req.json();
 
         console.log("SERVER - LOGIN REQUEST: ", data);

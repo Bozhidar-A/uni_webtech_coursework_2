@@ -1,15 +1,13 @@
 import Package from "@/app/models/Package";
 import dbConnect from "@/app/util/db";
-import { getSession } from "next-auth/react";
 import { NextResponse } from "next/server";
 
 export async function GET(req) {
     try {
-        const sesh = getSession({ req });
-
         await dbConnect();
         console.log("SERVER - PACKAGES REQUESTED");
-        const packages = await Package.find();
+        const packages = await Package.find({});
+        console.log("SERVER - PACKAGES: ", packages);
 
         return NextResponse.json(packages, { status: 200 });
     } catch (error) {

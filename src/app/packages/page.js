@@ -17,6 +17,7 @@ export default function Packages() {
         auth.HandleAPIRequest(`${process.env.NEXT_PUBLIC_API_BASE_URL}${process.env.NEXT_PUBLIC_API_PACKAGES}`)
             .then((res) => res.json())
             .then((data) => {
+                console.log(data);
                 setPackages(data);
                 setLoading(false);
             }).catch((err) => {

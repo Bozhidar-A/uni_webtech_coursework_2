@@ -6,30 +6,6 @@ process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE = '/packages';
 const home = "http://localhost:3000/";
 
 test.describe('Header Component', () => {
-    // test.beforeEach(async ({ page }) => {
-    //     // // Mock the session API response
-    //     // await page.route('**/api/auth/session', (route) =>
-    //     //     route.fulfill({
-    //     //         status: 200,
-    //     //         body: JSON.stringify({
-    //     //             user: {
-    //     //                 username: 'TestUser',
-    //     //                 email: 'test@example.com',
-    //     //             },
-    //     //             accessToken: 'mocked-access-token',
-    //     //         }),
-    //     //     })
-    //     // );
-
-    //     // Mock other API endpoints if needed
-    //     await page.route('**/api/some-other-endpoint', (route) =>
-    //         route.fulfill({
-    //             status: 200,
-    //             body: JSON.stringify({}),
-    //         })
-    //     );
-    // });
-
     test('renders correctly when the user is authenticated', async ({ page }) => {
         // Mock the session API to simulate an authenticated user
         await page.route('**/api/auth/session', (route) =>
