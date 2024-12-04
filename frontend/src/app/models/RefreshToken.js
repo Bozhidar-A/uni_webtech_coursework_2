@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+import mongoose, { Schema } from 'mongoose';
 
 // Refresh Token Model
-const RefreshTokenSchema = new mongoose.Schema({
+const RefreshTokenSchema = Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
@@ -10,5 +10,7 @@ const RefreshTokenSchema = new mongoose.Schema({
     expiresAt: Date,
     createdAt: { type: Date, default: Date.now }
 });
+
+mongoose.models = {};
 
 export default mongoose.model('RefreshToken', RefreshTokenSchema);

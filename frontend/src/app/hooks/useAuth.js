@@ -3,14 +3,11 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
 
-export default function useAuth(redirectTo = "/login") {
+export default function useAuth() {
     const { data: session, status } = useSession();
-    const [error, setError] = useState(null);
-    const router = useRouter();
-    const pathname = usePathname();
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [username, setUsername] = useState("NO_USER_ERROR");
+    const [username, setUsername] = useState(null);
 
     useEffect(() => {
         if (session?.user) {

@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const PackageSchema = new mongoose.Schema({
+const PackageSchema = Schema({
     id: {
         type: String,
         required: true,
@@ -23,5 +23,7 @@ const PackageSchema = new mongoose.Schema({
         required: true,
     },
 }, { collection: "packages" });
+
+mongoose.models = {};
 
 export default mongoose.model('Package', PackageSchema);

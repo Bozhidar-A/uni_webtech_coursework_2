@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-const UserSchema = new mongoose.Schema({
+var UserSchema = Schema({
     username: {
         type: String,
         required: true,
@@ -11,5 +11,7 @@ const UserSchema = new mongoose.Schema({
         required: true,
     }
 }, { collection: "users" });
+
+mongoose.models = {};
 
 export default mongoose.model('User', UserSchema);

@@ -4,7 +4,6 @@ import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { FadeLoader } from "react-spinners";
 import Header from "./Header";
 import LoadingWait from "./LoadingWait";
 
@@ -36,6 +35,12 @@ export function SubProviders({ children }) {
             // Redirect to home page if user is already logged in
             // window.history.replaceState(null, "", "/");
             router.push("/");
+        }
+
+        //protect routes
+        const protectedRoutes = [process.env.NEXT_PUBLIC_API_PACKAGES, process.env.NEXT_PUBLIC_API_PACKAGES_UPDATE_DELIVERY_STATUS];
+        if (protectedRoutes.includes(path) && sesh?.status !== "authenticated") {
+            router.push("/login");
         }
     }, [sesh]);
 
