@@ -1,5 +1,3 @@
-// export { default } from "next-auth/middleware"
-
 import { NextResponse } from "next/server";
 import { AuthenticateToken } from "./app/util/tokens";
 
