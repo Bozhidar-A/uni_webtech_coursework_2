@@ -55,7 +55,9 @@ test.describe('Packages', () => {
     test("cant fetch without auth API", async ({ request }) => {
         const res = await request.fetch('http://localhost:3000/api/backend/packages');
 
-        expect(res.status()).not.toBe(200);
+        //accessing a protedted route without auth should return a redirect to login
+        //even if its an API request
+        expect(res.url()).toContain('/login');
     });
 
     test('can fetch with auth API', async () => {
