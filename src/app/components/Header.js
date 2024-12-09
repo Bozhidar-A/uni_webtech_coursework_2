@@ -35,7 +35,7 @@ export default function Header() {
                                     href={process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE}
                                     className="block py-2 px-3 text-white bg-primary-700 lg:bg-transparent lg:text-primary-700 lg:p-0 dark:text-white"
                                 >
-                                    Packages
+                                    <p>Packages</p>
                                 </Link>
                             </li>
                         </ul>

@@ -66,13 +66,14 @@ export async function CreateRefreshToken(user) {
 
 export async function AuthenticateToken(req, res, next) {
     const headerList = await headers();
-    const authHeader = headerList.get("authorization")
+    const authHeader = headerList.get("authorization");
+    console.log("AUTH HEADER: ", authHeader);
     const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
 
     //debug
     console.log("TOKEN: ", token);
 
-    if (token == null) return NextResponse.json({}, { status: 401 }); // No token
+    if (token == null) return false
 
     try {
         const decoded = await jose.jwtVerify(token, jwtConfig.secret)
@@ -80,12 +81,14 @@ export async function AuthenticateToken(req, res, next) {
         console.log("DECODED: ", decoded);
 
         if (!decoded.payload?.id) {
-            return NextResponse.json({}, { status: 403 });
+            return false
         }
     } catch (error) {
         console.log("JWT VERIFY ERROR: ", error);
-        return NextResponse.json({}, { status: 403 });
+        return false
     }
+
+    return true
 }
 
 export const UserLoginValidation = z.object({

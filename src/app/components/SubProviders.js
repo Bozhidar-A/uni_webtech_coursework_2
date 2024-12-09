@@ -37,21 +37,6 @@ export function SubProviders({ children }) {
             router.push("/");
             return;
         }
-
-        //protect routes
-        const protectedRoutes = [process.env.NEXT_PUBLIC_API_PACKAGES, process.env.NEXT_PUBLIC_API_PACKAGES_UPDATE_DELIVERY_STATUS, process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE];
-        if (protectedRoutes.includes(path) && sesh?.status !== "authenticated") {
-
-            //add login redirect for packages navigation page
-            //this doesnt seem to work...
-            //it loads login twice?
-            if (path === process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE) {
-                router.push(`/login?callbackUrl=${process.env.NEXT_PUBLIC_NAVIGATION_PACKAGES_PAGE}`);
-                return;
-            }
-
-            router.push("/login");
-        }
     }, [sesh, path]);
 
     return (

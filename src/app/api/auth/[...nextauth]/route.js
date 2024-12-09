@@ -1,12 +1,12 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-const states = {
+export const states = {
     AUTH_SIGNIN_SERVER_ERROR: "AUTH_SIGNIN_SERVER_ERROR",
     AUTH_SIGNIN_ERROR: "AUTH_SIGNIN_ERROR",
 }
 
-const OPTIONS = {
+export const OPTIONS = {
     providers: [
         CredentialsProvider({
             name: "Username and Password",
